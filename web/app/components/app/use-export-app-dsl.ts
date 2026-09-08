@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { consoleClient } from '@/service/console'
-import { downloadBlob } from '@/utils/download'
+import { downloadAppDSLFile } from './dsl-file'
 
 type ExportAppDslInput = {
   appId: string
@@ -43,24 +43,12 @@ async function exportAppDslFile({ appId, appName, includeSecret = false }: Expor
   const response = await consoleClient.apps.byAppId.export.get(
     {
       params: { app_id: appId },
-      query: { include_secret: includeSecret },
+      query: { include_secret: includeSecret, include_workflow_tools: true },
     },
     { context: { silent: true } },
   )
 
-  if (response instanceof Blob) {
-    const name = response instanceof File ? response.name : undefined
-    downloadBlob({
-      data: response,
-      fileName: name && name !== 'blob' ? name : `${appName}.ifpkg`,
-    })
-    return
-  }
-
-  downloadBlob({
-    data: new Blob([response.data], { type: 'application/yaml' }),
-    fileName: `${appName}.yml`,
-  })
+  downloadAppDSLFile(response, appName)
 }
 
 async function downloadAppDsl(input: ExportAppDslInput, messages: ExportAppDslMessages) {
