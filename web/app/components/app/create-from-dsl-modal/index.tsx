@@ -318,15 +318,19 @@ function CreateFromDSLModal({
                   className="px-6 py-4"
                 >
                   <Uploader
-                    accept=".yaml,.yml,.ifpkg"
-                    displayName={isPackageImport ? 'IFPKG' : 'YAML'}
                     browseButtonRef={browseButtonRef}
                     className="mt-0"
                     file={currentFile}
                     updateFile={setCurrentFile}
                     disabled={isImporting}
-                    accept=".yaml,.yml,.zip"
-                    displayName={currentFile?.name.toLowerCase().endsWith('.zip') ? 'ZIP' : 'YAML'}
+                    accept=".yaml,.yml,.zip,.ifpkg"
+                    displayName={
+                      isPackageImport
+                        ? 'IFPKG'
+                        : currentFile?.name.toLowerCase().endsWith('.zip')
+                          ? 'ZIP'
+                          : 'YAML'
+                    }
                   />
                 </TabsPanel>
                 <TabsPanel
